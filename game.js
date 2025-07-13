@@ -1,6 +1,8 @@
 let gamePattern = [];
 let buttonColors = ["red", "blue", "green", "yellow"];
 let userClickedPattern = [];
+let started = false;
+let level = 0;
 
 // ボタンがひかる
 function flashButton(randomChosenColor) {
@@ -12,6 +14,10 @@ function flashButton(randomChosenColor) {
 
 // 次の色を決める
 function nextSequence() {
+  userClickedPattern = [];
+  level++;
+  $("#level-title").text("レベル" + level); // 通常の表示
+
   let randomNumber = Math.floor(Math.random() * 4);
   let randomChosenColor = buttonColors[randomNumber];
   gamePattern.push(randomChosenColor);
@@ -33,6 +39,7 @@ function playSound(color) {
   audio.play();
 }
 
+// アニメーションが入る
 function animatePress(currentColor) {
   $("#" + currentColor).addClass("pressed");
 
@@ -40,3 +47,12 @@ function animatePress(currentColor) {
     $("#" + currentColor).removeClass("pressed");
   }, 100);
 }
+
+// 開始の部分
+$(document).keydown(function () {
+  if (!started) {
+    $("#level-title").text("レベル" + level); //最初の表示
+    nextSequence();
+    started = true;
+  }
+});
