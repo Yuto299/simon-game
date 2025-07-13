@@ -23,14 +23,18 @@ function nextSequence() {
   gamePattern.push(randomChosenColor);
 
   flashButton(randomChosenColor);
+  playSound();
 }
 // ユーザーがボタンをクリックした時の処理
 $(".btn").click(function () {
   let userChosenColor = $(this).attr("id");
   userClickedPattern.push(userChosenColor); // (配列に入れるもの)
   console.log(userClickedPattern);
+
   flashButton(userChosenColor);
   animatePress(userChosenColor);
+
+  checkAnswer(userChosenColor.length - 1); //正解数
 });
 
 // サウンド再生
@@ -56,3 +60,34 @@ $(document).keydown(function () {
     started = true;
   }
 });
+
+// 回答を確認する
+function checkAnswer(currentLevel) {
+  if (userClickedPattern[currentLevel] === gamePattern[currentLevel]) {
+    console.log("正解");
+
+    if (userClickedPattern.length === gamePattern.length) {
+      setTimeout(function () {
+        nextSequence();
+      }, 1000);
+    }
+  } else {
+    console.log("不正解");
+
+    playSound("sounds/wrong");
+    $("#level-title").text("ゲームオーバー！Aキーで再スタート");
+    $("body").addClass("game-over");
+    setTimeout(function () {
+      $("body").removeClass("game-over");
+    }, 200);
+
+    startOver();
+  }
+}
+
+function startOver() {
+  level = 0;
+  gamePattern = [];
+  userClickedPattern = [];
+  started = false;
+}
